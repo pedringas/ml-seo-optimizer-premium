@@ -43,7 +43,17 @@ export default function App() {
   // Modal States
   const [showPayModal, setShowPayModal] = React.useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = React.useState(false);
+  const [showAuthModal, setShowAuthModal] = React.useState(false);
   const [selectedPackage, setSelectedPackage] = React.useState<{ amount: number, price: number } | null>(null);
+
+  // Called by tools when a guest tries to perform an action
+  const requireAuth = () => {
+    if (!user) {
+      setShowAuthModal(true);
+      return false;
+    }
+    return true;
+  };
 
   const isAdmin = user?.email === 'pconti10@gmail.com';
 
@@ -64,11 +74,12 @@ export default function App() {
               email: firebaseUser.email,
               displayName: firebaseUser.displayName,
               photoURL: firebaseUser.photoURL,
-              tokenBalance: 500,
+              tokenBalance: 30,
               isAdmin: firebaseUser.email === 'pconti10@gmail.com',
               createdAt: serverTimestamp(),
               updatedAt: serverTimestamp()
             });
+            setShowAuthModal(false);
             setShowWelcomeModal(true);
           }
         });
@@ -161,8 +172,10 @@ export default function App() {
     try {
       if (isLoginMode) {
         await loginWithEmail(email, password);
+        setShowAuthModal(false);
       } else {
         await registerWithEmail(email, password);
+        // welcome modal opens automatically when Firestore doc is created
       }
     } catch (err: any) {
       setAuthError(err.message || 'Error de autenticación');
@@ -183,99 +196,22 @@ export default function App() {
     );
   }
 
-  if (!user) {
-    return (
-      <div className="h-screen w-full flex items-center justify-center bg-[#F5F5F7] p-4">
-        <Card className="max-w-md w-full border-none shadow-2xl rounded-[2.5rem] overflow-hidden bg-white">
-          <div className="h-28 bg-ml-blue flex items-center justify-center relative overflow-hidden">
-            <div className="absolute inset-0 opacity-20 pointer-events-none">
-              <div className="grid grid-cols-8 gap-4 transform rotate-12 scale-150">
-                {[...Array(64)].map((_, i) => (
-                  <Sparkles key={i} className="text-white w-8 h-8" />
-                ))}
-              </div>
-            </div>
-            <div className="bg-white p-4 rounded-[1.5rem] shadow-xl relative z-10 transition-transform hover:scale-110 duration-500">
-               <Sparkles className="w-8 h-8 text-ml-blue" />
-            </div>
-          </div>
-          <CardHeader className="text-center pt-8 pb-2">
-            <CardTitle className="text-2xl font-black italic tracking-tight text-slate-900 underline decoration-ml-blue/30 underline-offset-8">PRODUCT PRO</CardTitle>
-            <CardDescription className="text-slate-500 px-6 font-medium mt-2 text-sm">
-              {t('app.subtitle')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="p-6">
-            <form onSubmit={handleEmailAuth} className="space-y-4 mb-4">
-              <div className="space-y-2">
-                <input 
-                  type="email" 
-                  placeholder={t('app.email_placeholder')} 
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  className="flex h-10 w-full rounded-md border border-slate-300 bg-transparent px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 disabled:cursor-not-allowed disabled:opacity-50"
-                  required
-                />
-                <input 
-                  type="password" 
-                  placeholder={t('app.password_placeholder')} 
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  className="flex h-10 w-full rounded-md border border-slate-300 bg-transparent px-3 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-400 disabled:cursor-not-allowed disabled:opacity-50"
-                  required
-                />
-              </div>
-              {authError && <p className="text-red-500 text-xs font-medium text-center">{authError}</p>}
-              <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold h-10">
-                {isLoginMode ? t('app.login_btn') : t('app.register_btn')}
-              </Button>
-            </form>
-            <div className="text-center mb-4">
-              <button 
-                onClick={() => { setIsLoginMode(!isLoginMode); setAuthError(''); }}
-                className="text-xs text-slate-500 hover:text-slate-800 font-medium underline"
-              >
-                {isLoginMode ? t('app.no_account') : t('app.has_account')}
-              </button>
-            </div>
-            
-            <div className="relative mb-6 text-center">
-               <span className="text-xs text-slate-400 uppercase tracking-widest font-bold bg-white px-2 relative z-10">O</span>
-               <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-slate-200" />
-            </div>
-
-            <Button 
-              type="button"
-              className="w-full h-12 bg-white border-2 border-slate-200 text-slate-800 hover:bg-slate-50 font-black text-sm rounded-xl shadow-sm transition-all"
-              onClick={loginWithGoogle}
-            >
-              <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4 mr-2" />
-              {t('app.google_btn')}
-            </Button>
-            
-            <p className="text-center text-[9px] text-slate-400 uppercase tracking-widest mt-6 font-bold">
-              {t('app.auth_attention')}
-            </p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-[#F8F9FB]">
       <Sidebar 
         activeTool={activeTool} 
         setActiveTool={setActiveTool} 
         tokenBalance={userData?.tokenBalance || 0}
-        userName={user.displayName}
+        userName={user?.displayName ?? null}
         isAdmin={isAdmin}
-        onLogout={logout}
-        onBuyTokens={() => setShowPayModal(true)}
+        onLogout={user ? logout : undefined}
+        onBuyTokens={() => user ? setShowPayModal(true) : setShowAuthModal(true)}
+        user={user}
+        onShowAuth={() => setShowAuthModal(true)}
       />
 
-      <main className="md:ml-64 p-4 lg:p-8 transition-all duration-300">
-        <div className="max-w-7xl mx-auto pt-14 md:pt-0">
+      <main className="lg:ml-64 p-4 lg:p-8 transition-all duration-300 pt-[4.5rem] pb-20 lg:pt-4 lg:pb-4">
+        <div className="max-w-7xl mx-auto">
           {activeTool === 'seo' && (
             <SeoOptimizer 
               user={user} 
@@ -283,6 +219,7 @@ export default function App() {
               isAdmin={isAdmin} 
               saveToHistory={saveToHistory}
               openPayModal={() => setShowPayModal(true)}
+              onRequireAuth={requireAuth}
             />
           )}
 
@@ -293,6 +230,7 @@ export default function App() {
               isAdmin={isAdmin} 
               saveToHistory={saveToHistory}
               openPayModal={() => setShowPayModal(true)}
+              onRequireAuth={requireAuth}
             />
           )}
           
@@ -307,7 +245,13 @@ export default function App() {
           )}
 
           {activeTool === 'dashboard' && (
-            <UserDashboard onBuyTokens={() => setShowPayModal(true)} />
+            user
+              ? <UserDashboard onBuyTokens={() => setShowPayModal(true)} />
+              : <div className="flex flex-col items-center justify-center h-96 gap-4">
+                  <Sparkles className="w-12 h-12 text-slate-300" />
+                  <p className="text-slate-500 font-bold">Creá una cuenta para ver tu historial y saldo</p>
+                  <Button onClick={() => setShowAuthModal(true)} className="bg-ml-blue text-white font-black rounded-2xl px-8">Crear cuenta gratis</Button>
+                </div>
           )}
 
           {activeTool === 'admin' && isAdmin && (
@@ -379,6 +323,76 @@ export default function App() {
         </DialogContent>
       </Dialog>
 
+      {/* Auth Modal - shown when guest tries to use a tool */}
+      <Dialog open={showAuthModal} onOpenChange={(val) => { setShowAuthModal(val); setAuthError(''); }}>
+        <DialogContent className="max-w-md bg-white shadow-2xl border-none p-0 overflow-hidden rounded-3xl">
+          <div className="h-24 bg-ml-blue flex items-center justify-center relative overflow-hidden">
+            <div className="absolute inset-0 opacity-20 pointer-events-none">
+              <div className="grid grid-cols-8 gap-4 transform rotate-12 scale-150">
+                {[...Array(64)].map((_, i) => (
+                  <Sparkles key={i} className="text-white w-8 h-8" />
+                ))}
+              </div>
+            </div>
+            <div className="bg-white p-3 rounded-[1.5rem] shadow-xl relative z-10">
+              <Sparkles className="w-7 h-7 text-ml-blue" />
+            </div>
+          </div>
+          <div className="p-8">
+            <DialogHeader className="mb-6 text-center">
+              <DialogTitle className="text-2xl font-black text-slate-900">{isLoginMode ? 'Iniciá sesión' : 'Crear cuenta gratis'}</DialogTitle>
+              <DialogDescription className="text-slate-500 font-medium">
+                {isLoginMode ? 'Accedé para usar las herramientas de IA.' : '¡Registrate y recibí 30 tokens de regalo!'}
+              </DialogDescription>
+            </DialogHeader>
+            <form onSubmit={handleEmailAuth} className="space-y-4 mb-4">
+              <div className="space-y-2">
+                <input
+                  type="email"
+                  placeholder={t('app.email_placeholder')}
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  className="flex h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-ml-blue/30"
+                  required
+                />
+                <input
+                  type="password"
+                  placeholder={t('app.password_placeholder')}
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  className="flex h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-ml-blue/30"
+                  required
+                />
+              </div>
+              {authError && <p className="text-red-500 text-xs font-medium text-center">{authError}</p>}
+              <Button type="submit" className="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold h-11 rounded-xl">
+                {isLoginMode ? t('app.login_btn') : t('app.register_btn')}
+              </Button>
+            </form>
+            <div className="text-center mb-4">
+              <button
+                onClick={() => { setIsLoginMode(!isLoginMode); setAuthError(''); }}
+                className="text-xs text-slate-500 hover:text-slate-800 font-medium underline"
+              >
+                {isLoginMode ? t('app.no_account') : t('app.has_account')}
+              </button>
+            </div>
+            <div className="relative mb-5 text-center">
+              <span className="text-xs text-slate-400 uppercase tracking-widest font-bold bg-white px-2 relative z-10">O</span>
+              <div className="absolute top-1/2 left-0 right-0 h-[1px] bg-slate-200" />
+            </div>
+            <Button
+              type="button"
+              className="w-full h-11 bg-white border-2 border-slate-200 text-slate-800 hover:bg-slate-50 font-black text-sm rounded-xl shadow-sm"
+              onClick={loginWithGoogle}
+            >
+              <img src="https://www.google.com/favicon.ico" alt="Google" className="w-4 h-4 mr-2" />
+              {t('app.google_btn')}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Dialog open={showWelcomeModal} onOpenChange={setShowWelcomeModal}>
         <DialogContent className="max-w-md text-center bg-white shadow-2xl border-none p-0 overflow-hidden rounded-3xl">
           <div className="h-40 bg-ml-yellow flex items-center justify-center relative overflow-hidden">
@@ -393,13 +407,13 @@ export default function App() {
             <DialogHeader>
               <DialogTitle className="text-3xl font-black text-slate-900 tracking-tight">¡Bienvenido!</DialogTitle>
               <DialogDescription className="text-base text-slate-600 font-medium px-4">
-                ¡Gracias por elegir PRODUCT PRO! Como regalo de bienvenida, hemos cargado <span className="font-black text-ml-blue underline decoration-ml-blue/20">500 Tokens gratuitos</span> en tu cuenta.
+                ¡Gracias por elegir PRODUCT PRO! Como regalo de bienvenida, te cargamos <span className="font-black text-ml-blue underline decoration-ml-blue/20">30 Tokens gratuitos</span> en tu cuenta.
               </DialogDescription>
             </DialogHeader>
             <div className="bg-slate-50 p-6 rounded-3xl border border-slate-100 flex items-center justify-between shadow-inner">
               <div className="text-left">
                 <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Saldo Inicial</p>
-                <p className="text-3xl font-black text-slate-900">500 <span className="text-sm font-bold text-slate-400 uppercase">Tokens</span></p>
+                <p className="text-3xl font-black text-slate-900">30 <span className="text-sm font-bold text-slate-400 uppercase">Tokens</span></p>
               </div>
               <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-100">
                 <Coins className="w-10 h-10 text-ml-yellow fill-ml-yellow" />

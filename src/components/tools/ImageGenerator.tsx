@@ -52,6 +52,7 @@ interface ImageGeneratorProps {
   isAdmin: boolean;
   saveToHistory: (item: HistoryItem) => void;
   openPayModal: () => void;
+  onRequireAuth: () => boolean;
 }
 
 type GenerationType = 'PRO_STUDIO' | 'LIFESTYLE' | 'MEASURES' | 'INFOGRAPHIC' | 'COVER' | 'DETAIL';
@@ -92,7 +93,7 @@ interface BatchItem {
   settings: BatchItemSettings;
 }
 
-export default function ImageGenerator({ user, userData, isAdmin, saveToHistory, openPayModal }: ImageGeneratorProps) {
+export default function ImageGenerator({ user, userData, isAdmin, saveToHistory, openPayModal, onRequireAuth }: ImageGeneratorProps) {
   // --- Individual Mode States ---
   const [rawImage, setRawImage] = React.useState<string | null>(null);
   const [heroImage, setHeroImage] = React.useState<string | null>(null);
@@ -376,10 +377,7 @@ export default function ImageGenerator({ user, userData, isAdmin, saveToHistory,
   };
 
   const handleTransform = async (type: GenerationType) => {
-    if (!user) {
-      toast.error('Debes iniciar sesión para transformar imágenes');
-      return;
-    }
+    if (!onRequireAuth()) return;
 
     const sourceImage = type === 'PRO_STUDIO' ? rawImage : (heroImage || rawImage);
     if (!sourceImage) {
@@ -528,7 +526,7 @@ export default function ImageGenerator({ user, userData, isAdmin, saveToHistory,
   };
 
   const processBatch = async (type: GenerationType) => {
-    if (!user) return;
+    if (!onRequireAuth()) return;
     const itemsToProcess = batchItems.filter(item => item.status === 'idle' || (type !== 'PRO_STUDIO' && item.hero));
     
     if (itemsToProcess.length === 0) {

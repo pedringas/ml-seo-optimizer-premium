@@ -62,9 +62,10 @@ interface SeoOptimizerProps {
   isAdmin: boolean;
   saveToHistory: (item: HistoryItem) => void;
   openPayModal: () => void;
+  onRequireAuth: () => boolean;
 }
 
-export default function SeoOptimizer({ user, userData, isAdmin, saveToHistory, openPayModal }: SeoOptimizerProps) {
+export default function SeoOptimizer({ user, userData, isAdmin, saveToHistory, openPayModal, onRequireAuth }: SeoOptimizerProps) {
   const [activeTab, setActiveTab] = React.useState<'individual' | 'batch'>('individual');
   const [loading, setLoading] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
@@ -239,10 +240,7 @@ export default function SeoOptimizer({ user, userData, isAdmin, saveToHistory, o
   };
 
   const handleIndividualGenerate = async () => {
-    if (!user) {
-      toast.error('Debes iniciar sesión para generar contenido');
-      return;
-    }
+    if (!onRequireAuth()) return;
 
     const cost = deepSearch ? 2 : 1;
     const currentBalance = userData?.tokenBalance || 0;
@@ -298,10 +296,7 @@ export default function SeoOptimizer({ user, userData, isAdmin, saveToHistory, o
   };
 
   const handleBatchGenerate = async () => {
-    if (!user) {
-      toast.error('Debes iniciar sesión para generar contenido');
-      return;
-    }
+    if (!onRequireAuth()) return;
 
     const tokenCost = batchInputs.length * (deepSearch ? 2 : 1);
     const currentBalance = userData?.tokenBalance || 0;
@@ -420,39 +415,39 @@ export default function SeoOptimizer({ user, userData, isAdmin, saveToHistory, o
       <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as any)} className="w-full border-none shadow-none bg-transparent flex flex-col gap-10">
         {/* Superior Section - Full Width */}
       <div className="w-full space-y-8">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-8">
-          <div className="space-y-2">
-            <h2 className="text-3xl font-black tracking-tight text-slate-900">E-commerce SEO Optimizer</h2>
-            <p className="text-slate-500 max-w-2xl font-medium">Optimiza títulos y descripciones con inteligencia artificial de alto impacto.</p>
+        <div className="flex flex-col gap-4 border-b border-slate-200 pb-6">
+          <div className="space-y-1">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-slate-900">E-commerce SEO Optimizer</h2>
+            <p className="text-slate-500 font-medium text-sm">Optimiza títulos y descripciones con inteligencia artificial.</p>
           </div>
           
-          <div className="flex flex-wrap gap-4 self-start md:self-auto items-center">
-            <div className="flex items-center gap-2 bg-slate-100/50 px-4 py-2 rounded-2xl border border-slate-100 shadow-sm">
-                <Coins className="w-4 h-4 text-ml-yellow fill-ml-yellow shadow-sm" />
-                <span className="text-xs font-black text-slate-900 tracking-tight">{userData?.tokenBalance || 0} Tokens</span>
+          <div className="flex flex-wrap gap-2 items-center">
+            <div className="flex items-center gap-2 bg-slate-100/50 px-3 py-1.5 rounded-xl border border-slate-100 shadow-sm">
+                <Coins className="w-4 h-4 text-ml-yellow fill-ml-yellow" />
+                <span className="text-xs font-black text-slate-900">{userData?.tokenBalance || 0} Tokens</span>
             </div>
 
             <Button 
                 variant="outline"
-                className="h-12 px-6 border-slate-200 rounded-2xl font-black text-slate-500 hover:bg-white transition-all shadow-sm hover:border-red-200 hover:text-red-500 group"
+                className="h-9 px-4 border-slate-200 rounded-xl font-black text-slate-500 text-sm hover:bg-white transition-all shadow-sm hover:border-red-200 hover:text-red-500 group"
                 onClick={activeTab === 'batch' ? resetBatch : resetIndividual}
                 disabled={loading}
             >
-                <RefreshCw className="w-4 h-4 mr-2 group-hover:rotate-180 transition-transform duration-500" /> Reiniciar {activeTab === 'batch' ? 'Lote' : 'Generador'}
+                <RefreshCw className="w-3.5 h-3.5 mr-1.5 group-hover:rotate-180 transition-transform duration-500" /> Reiniciar
             </Button>
 
-            <div className="bg-slate-100 p-1.5 rounded-2xl flex gap-1">
+            <div className="bg-slate-100 p-1 rounded-xl flex gap-1">
                 <button 
                 onClick={() => setActiveTab('individual')}
-                className={`px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${activeTab === 'individual' ? 'bg-white shadow-sm text-ml-blue' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`px-4 py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 ${activeTab === 'individual' ? 'bg-white shadow-sm text-ml-blue' : 'text-slate-500 hover:text-slate-700'}`}
                 >
-                <Package className="w-4 h-4" /> Individual
+                <Package className="w-3.5 h-3.5" /> Individual
                 </button>
                 <button 
                 onClick={() => setActiveTab('batch')}
-                className={`px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${activeTab === 'batch' ? 'bg-white shadow-sm text-ml-blue' : 'text-slate-500 hover:text-slate-700'}`}
+                className={`px-4 py-2 rounded-lg font-black text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 ${activeTab === 'batch' ? 'bg-white shadow-sm text-ml-blue' : 'text-slate-500 hover:text-slate-700'}`}
                 >
-                <FileStack className="w-4 h-4" /> En Lote
+                <FileStack className="w-3.5 h-3.5" /> En Lote
                 </button>
             </div>
           </div>
@@ -467,8 +462,8 @@ export default function SeoOptimizer({ user, userData, isAdmin, saveToHistory, o
           transition={{ duration: 0.5, ease: "easeOut" }}
           className="w-full"
         >
-          <Card className="border-none ring-1 ring-slate-200 shadow-3xl rounded-[3rem] overflow-hidden bg-white">
-            <CardHeader className="bg-slate-50/80 border-b border-slate-100 p-10">
+          <Card className="border-none ring-1 ring-slate-200 shadow-3xl rounded-2xl sm:rounded-[3rem] overflow-hidden bg-white">
+            <CardHeader className="bg-slate-50/80 border-b border-slate-100 p-5 sm:p-10">
               <div className="flex items-center gap-4">
                 <div className="bg-ml-blue p-2.5 rounded-xl shadow-lg shadow-ml-blue/20 shrink-0">
                   <Package className="w-6 h-6 text-white" />
@@ -646,15 +641,15 @@ export default function SeoOptimizer({ user, userData, isAdmin, saveToHistory, o
                     </Button>
 
                     <Button 
-                      className="flex-1 bg-ml-blue hover:bg-ml-blue/90 text-white font-black h-20 text-2xl shadow-2xl shadow-ml-blue/40 rounded-[1.5rem] transition-all hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden group"
+                      className="flex-1 bg-ml-blue hover:bg-ml-blue/90 text-white font-black h-16 sm:h-20 text-base sm:text-2xl shadow-2xl shadow-ml-blue/40 rounded-2xl sm:rounded-[1.5rem] transition-all hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden group"
                       onClick={handleIndividualGenerate}
                       disabled={loading || (!isAdmin && (userData?.tokenBalance || 0) < (deepSearch ? 2 : 1))}
                     >
                       <div className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                      {loading ? <Loader2 className="w-8 h-8 animate-spin mr-3" /> : <Sparkles className="w-8 h-8 mr-3" />}
-                      <span>Generar SEO Maestro</span>
-                      <div className="ml-4 flex items-center gap-1.5 bg-black/20 px-3 py-1 rounded-full text-xs font-black">
-                         <Coins className="w-3.5 h-3.5" /> {deepSearch ? 2 : 1}
+                      {loading ? <Loader2 className="w-5 h-5 sm:w-8 sm:h-8 animate-spin mr-2 sm:mr-3 shrink-0" /> : <Sparkles className="w-5 h-5 sm:w-8 sm:h-8 mr-2 sm:mr-3 shrink-0" />}
+                      <span className="truncate">Generar SEO Maestro</span>
+                      <div className="ml-2 sm:ml-4 flex items-center gap-1 bg-black/20 px-2 sm:px-3 py-1 rounded-full text-xs font-black shrink-0">
+                         <Coins className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> {deepSearch ? 2 : 1}
                       </div>
                     </Button>
                     {loading && (
