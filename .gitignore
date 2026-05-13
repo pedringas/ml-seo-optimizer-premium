@@ -1,0 +1,11 @@
+node_modules/
+build/
+dist/
+coverage/
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# Firebase config con claves sensibles - NO subir si el repo es público
+firebase-applet-config.json

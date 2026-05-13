@@ -1,0 +1,73 @@
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: users
+// Document ID: {uid}
+// Fields:
+//   - uid: string (required) - Firebase Auth UID
+//   - email: string (required, email format)
+//   - displayName: string
+//   - photoURL: string
+//   - tokenBalance: number (required) - Current available tokens
+//   - createdAt: timestamp
+//   - updatedAt: timestamp
+//
+// Collection: transactions
+// Document ID: {transactionId}
+// Fields:
+//   - uid: string (required) - User UID
+//   - amount: number (required) - Token amount
+//   - type: string (required, enum: purchase, usage)
+//   - description: string
+//   - timestamp: timestamp
+//   - mercadoPagoPaymentId: string
+//
+// ===============================================================
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && request.auth.token.email == "pconti10@gmail.com";
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'tokenBalance']) &&
+             data.uid == request.auth.uid &&
+             isValidEmail(data.email) &&
+             data.tokenBalance is number;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /users/{uid} {
+      allow read: if isAuthenticated() && (request.auth.uid == uid || isAdmin());
+      allow write: if isAuthenticated() && (request.auth.uid == uid || isAdmin());
+    }
+
+    match /transactions/{transactionId} {
+      allow read: if isAuthenticated() && (resource.data.uid == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && (request.resource.data.uid == request.auth.uid || isAdmin());
+    }
+  }
+}

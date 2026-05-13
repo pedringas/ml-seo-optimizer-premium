@@ -1,0 +1,8 @@
+{
+  "name": "Product Pro Suite",
+  "description": "Herramienta todo-en-uno para vendedores: Optimización SEO con IA, Generación de Imágenes y Gestión de Historial.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user information and token balance",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "format": "email" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "tokenBalance": { "type": "number", "description": "Current available tokens" },
+        "isAdmin": { "type": "boolean", "description": "Whether the user has administrative privileges" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "tokenBalance"]
+    },
+    "Transaction": {
+      "title": "Token Transaction",
+      "description": "Records token purchases, usage, or gifts",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "User UID" },
+        "amount": { "type": "number", "description": "Amount of tokens (positive for purchase/gift, negative for usage)" },
+        "type": { "type": "string", "enum": ["purchase", "usage", "gift"] },
+        "description": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "mercadoPagoPaymentId": { "type": "string", "description": "Reference to MP payment if applicable" }
+      },
+      "required": ["uid", "amount", "type", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "User",
+      "description": "User profile and balance"
+    },
+    "/transactions/{transactionId}": {
+      "schema": "Transaction",
+      "description": "History of token movements"
+    }
+  }
+}
