@@ -7,5 +7,6 @@ coverage/
 .env*
 !.env.example
 
-# Firebase config con claves sensibles - NO subir si el repo es público
-firebase-applet-config.json
+# Firebase client config is NOT secret - it runs in the browser
+# Security is enforced by Firestore Rules, not by hiding this file
+# firebase-applet-config.json  <-- intentionally tracked in git
