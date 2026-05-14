@@ -834,39 +834,39 @@ export default function ImageGenerator({ user, userData, isAdmin, saveToHistory,
         )}
       </AnimatePresence>
 
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div className="space-y-2">
-          <h2 className="text-3xl font-black tracking-tight text-slate-900">Transformador de Imágenes Pro</h2>
-          <p className="text-slate-500 max-w-2xl font-medium">De fotos de celular a fotografía de estudio profesional por IA.</p>
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200/60 pb-6 sm:pb-8">
+        <div className="space-y-1 sm:space-y-2">
+          <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 leading-tight">Transformador de Imágenes Pro</h2>
+          <p className="text-slate-500 max-w-2xl font-medium text-xs sm:text-base">De fotos de celular a fotografía de estudio profesional por IA.</p>
         </div>
         
-        <div className="flex flex-wrap gap-4 self-start md:self-auto items-center">
-          <div className="flex items-center gap-2 bg-slate-100/50 px-4 py-2 rounded-2xl border border-slate-100 shadow-sm">
-              <Coins className="w-4 h-4 text-ml-yellow fill-ml-yellow shadow-sm" />
-              <span className="text-xs font-black text-slate-900 tracking-tight">{userData?.tokenBalance || 0} Tokens</span>
+        <div className="flex flex-wrap gap-2 sm:gap-4 self-start md:self-auto items-center">
+          <div className="flex items-center gap-2 bg-slate-100/50 px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl sm:rounded-2xl border border-slate-100 shadow-sm">
+              <Coins className="w-3.5 h-3.5 sm:w-4 h-4 text-ml-yellow fill-ml-yellow" />
+              <span className="text-[10px] sm:text-xs font-black text-slate-900 tracking-tight">{userData?.tokenBalance || 0} Tokens</span>
           </div>
 
           <Button 
             variant="outline"
-            className="h-12 px-6 border-slate-200 rounded-2xl font-black text-slate-500 hover:bg-white transition-all shadow-sm hover:border-red-200 hover:text-red-500 group"
+            className="h-9 sm:h-12 px-3 sm:px-6 border-slate-200 rounded-xl sm:rounded-2xl font-black text-slate-500 text-[10px] sm:text-sm hover:bg-white transition-all shadow-sm group"
             onClick={isBatchMode ? resetBatch : resetIndividual}
             disabled={loading || processingBatch}
           >
-            <RefreshCw className="w-4 h-4 mr-2 group-hover:rotate-180 transition-transform duration-500" /> Reiniciar {isBatchMode ? 'Lote' : 'Generador'}
+            <RefreshCw className="w-3.5 h-3.5 sm:w-4 h-4 mr-1.5 sm:mr-2 group-hover:rotate-180 transition-transform duration-500" /> Reiniciar
           </Button>
 
-          <div className="bg-slate-100 p-1.5 rounded-2xl flex gap-1">
+          <div className="bg-slate-100 p-1 rounded-xl sm:rounded-2xl flex gap-1">
              <button 
                onClick={() => setIsBatchMode(false)}
-               className={`px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${!isBatchMode ? 'bg-white shadow-sm text-ml-blue' : 'text-slate-500 hover:text-slate-700'}`}
+               className={`px-3 py-1.5 sm:px-6 sm:py-2.5 rounded-lg sm:rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 sm:gap-2 ${!isBatchMode ? 'bg-white shadow-sm text-ml-blue' : 'text-slate-500 hover:text-slate-700'}`}
              >
-               <Maximize2 className="w-4 h-4" /> Individual
+               <Maximize2 className="w-3.5 h-3.5 sm:w-4 h-4" /> Indi.
              </button>
              <button 
                onClick={() => setIsBatchMode(true)}
-               className={`px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 ${isBatchMode ? 'bg-white shadow-sm text-ml-blue' : 'text-slate-500 hover:text-slate-700'}`}
+               className={`px-3 py-1.5 sm:px-6 sm:py-2.5 rounded-lg sm:rounded-xl font-black text-[10px] sm:text-xs uppercase tracking-wider transition-all flex items-center gap-1.5 sm:gap-2 ${isBatchMode ? 'bg-white shadow-sm text-ml-blue' : 'text-slate-500 hover:text-slate-700'}`}
              >
-               <FileStack className="w-4 h-4" /> En Lote
+               <FileStack className="w-3.5 h-3.5 sm:w-4 h-4" /> Lote
              </button>
           </div>
         </div>
@@ -1261,10 +1261,10 @@ export default function ImageGenerator({ user, userData, isAdmin, saveToHistory,
                                <Button 
                                  onClick={() => isBatchMode ? processBatch('PRO_STUDIO') : handleTransform('PRO_STUDIO')}
                                  disabled={loadingType === 'PRO_STUDIO' || (!isBatchMode && heroImage !== null) || !rawImage}
-                                 className="flex-1 h-14 bg-ml-yellow hover:bg-ml-yellow/90 text-slate-900 font-black rounded-2xl shadow-xl shadow-ml-yellow/10 gap-2 text-xs uppercase tracking-widest"
+                                 className="flex-1 h-16 sm:h-20 bg-ml-yellow hover:bg-ml-yellow/90 text-slate-900 font-black rounded-2xl sm:rounded-[1.5rem] shadow-xl shadow-ml-yellow/10 gap-2 text-sm sm:text-xl uppercase tracking-wider"
                                >
-                                 {(loadingType === 'PRO_STUDIO' || processingBatch) ? <Loader2 className="w-5 h-5 animate-spin" /> : <Sparkles className="w-5 h-5" />}
-                                 {isBatchMode ? 'Optimizar Lote' : 'Optimizar Imagen'}
+                                 {(loadingType === 'PRO_STUDIO' || processingBatch) ? <Loader2 className="w-6 h-6 sm:w-8 sm:h-8 animate-spin" /> : <Sparkles className="w-6 h-6 sm:w-8 sm:h-8" />}
+                                 <span>{isBatchMode ? 'Optimizar Lote' : 'Optimizar Imagen'}</span>
                                </Button>
                                
                                {!isBatchMode && heroImage && (
@@ -1814,10 +1814,10 @@ export default function ImageGenerator({ user, userData, isAdmin, saveToHistory,
                                     <Button 
                                       onClick={() => handleTransform(generationType)}
                                       disabled={loadingType !== null || !heroImage}
-                                      className="flex-1 h-14 bg-slate-900 hover:bg-black text-white font-black rounded-2xl shadow-xl gap-3 text-xs uppercase tracking-widest"
+                                      className="flex-1 h-16 sm:h-20 bg-slate-900 hover:bg-black text-white font-black rounded-2xl shadow-xl gap-3 text-sm sm:text-xl uppercase tracking-wider"
                                     >
                                       {loadingType !== null ? <Loader2 className="w-5 h-5 animate-spin" /> : <Wand2 className="w-5 h-5" />}
-                                      Generar Arte
+                                      <span>Generar Arte</span>
                                     </Button>
                                     
                                     {variantImage && (

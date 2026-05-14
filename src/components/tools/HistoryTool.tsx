@@ -88,7 +88,7 @@ export default function HistoryTool({ history, clearHistory }: HistoryToolProps)
                   </div>
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
-                      <h4 className="font-black text-lg text-slate-800">
+                      <h4 className="font-black text-sm sm:text-lg text-slate-800 truncate max-w-[200px] sm:max-w-none">
                         {item.tool === 'images' 
                           ? (item.type === 'individual' ? `Transformación: ${item.data[0].productName || 'Sin Nombre'}` : `Lote de ${item.imageCount || item.data.length} Imágenes`)
                           : (item.type === 'individual' ? item.data[0].productTitle : `${item.data.length} Productos en Lote`)

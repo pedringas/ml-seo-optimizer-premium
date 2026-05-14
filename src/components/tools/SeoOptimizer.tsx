@@ -745,7 +745,7 @@ export default function SeoOptimizer({ user, userData, isAdmin, saveToHistory, o
                   </Button>
 
                   <Button 
-                    className="flex-1 bg-ml-blue hover:bg-ml-blue/90 text-white font-black h-20 text-2xl shadow-xl shadow-ml-blue/30 rounded-2xl transition-all hover:scale-[1.01] active:scale-[0.99]"
+                    className="flex-1 bg-ml-blue hover:bg-ml-blue/90 text-white font-black h-16 sm:h-20 text-lg sm:text-2xl shadow-xl shadow-ml-blue/30 rounded-2xl transition-all hover:scale-[1.01] active:scale-[0.99]"
                     onClick={handleBatchGenerate}
                     disabled={loading || (!isAdmin && (userData?.tokenBalance || 0) < batchInputs.length * (deepSearch ? 2 : 1))}
                   >

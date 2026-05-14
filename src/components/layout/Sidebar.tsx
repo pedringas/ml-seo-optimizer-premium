@@ -28,6 +28,7 @@ interface SidebarProps {
   onBuyTokens: () => void;
   user?: any;
   onShowAuth?: () => void;
+  onGoLanding?: () => void;
 }
 
 export function Sidebar({ 
@@ -39,7 +40,8 @@ export function Sidebar({
   onLogout,
   onBuyTokens,
   user,
-  onShowAuth
+  onShowAuth,
+  onGoLanding
 }: SidebarProps) {
   // Start closed on mobile, open on desktop
   const [isOpen, setIsOpen] = React.useState(false);
@@ -127,6 +129,7 @@ export function Sidebar({
               onBuyTokens={onBuyTokens}
               onLogout={onLogout}
               onShowAuth={onShowAuth}
+              onGoLanding={onGoLanding}
               onClose={() => setIsOpen(false)}
             />
           </motion.aside>
@@ -152,6 +155,7 @@ export function Sidebar({
           onBuyTokens={onBuyTokens}
           onLogout={onLogout}
           onShowAuth={onShowAuth}
+          onGoLanding={onGoLanding}
         />
       </aside>
 
@@ -193,7 +197,7 @@ export function Sidebar({
 }
 
 // ── Extracted Sidebar Content ──
-function SidebarContent({ tools, adminTools, activeTool, handleNavClick, isAdmin, showLangs, setShowLangs, language, setLanguage, t, user, userName, tokenBalance, onBuyTokens, onLogout, onShowAuth, onClose }: any) {
+function SidebarContent({ tools, adminTools, activeTool, handleNavClick, isAdmin, showLangs, setShowLangs, language, setLanguage, t, user, userName, tokenBalance, onBuyTokens, onLogout, onShowAuth, onGoLanding, onClose }: any) {
   return (
     <>
       {/* Logo */}
@@ -256,6 +260,15 @@ function SidebarContent({ tools, adminTools, activeTool, handleNavClick, isAdmin
         )}
 
         <div className="mt-8 pt-4 border-t border-slate-100 space-y-1">
+          {onGoLanding && (
+            <button
+              onClick={onGoLanding}
+              className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all text-sm font-bold"
+            >
+              <Sparkles className="w-4 h-4 text-[#3483fa]" />
+              Ver página de inicio
+            </button>
+          )}
           <button className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-slate-500 hover:bg-slate-50 hover:text-slate-900 transition-all text-sm font-bold">
             <HelpCircle className="w-4 h-4 text-slate-400" />
             {t('sidebar.faq')}

@@ -91,7 +91,7 @@ export function UserDashboard({ onBuyTokens }: { onBuyTokens: () => void }) {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8">
+    <div className="max-w-6xl mx-auto p-4 sm:p-6 space-y-6 sm:space-y-8 pb-20 sm:pb-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-2">
@@ -110,9 +110,9 @@ export function UserDashboard({ onBuyTokens }: { onBuyTokens: () => void }) {
               </div>
             )}
           </div>
-          <div className="pr-4">
-            <p className="text-xs font-black text-slate-900 leading-none">{profile?.displayName || profile?.email?.split('@')[0]}</p>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{profile?.email}</p>
+          <div className="pr-4 overflow-hidden">
+            <p className="text-xs font-black text-slate-900 leading-none truncate max-w-[100px] sm:max-w-[200px]">{profile?.displayName || profile?.email?.split('@')[0]}</p>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest truncate max-w-[100px] sm:max-w-[200px]">{profile?.email}</p>
           </div>
         </div>
       </div>
@@ -130,7 +130,7 @@ export function UserDashboard({ onBuyTokens }: { onBuyTokens: () => void }) {
               </Badge>
             </div>
             <div className="space-y-1">
-              <h2 className="text-5xl font-black tracking-tighter leading-none">
+              <h2 className="text-4xl sm:text-5xl font-black tracking-tighter leading-none">
                 {profile?.tokenBalance || 0}
               </h2>
               <p className="text-blue-100 font-bold uppercase tracking-widest text-xs">{t('dashboard.available_tokens')}</p>
