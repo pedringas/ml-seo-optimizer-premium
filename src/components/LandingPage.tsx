@@ -14,9 +14,8 @@ const IMAGE_VARIANTS = [
     color: 'from-blue-500 to-blue-600',
     badge: 'bg-blue-500',
     description: 'Fondo blanco profesional, iluminación perfecta',
-    filter: 'brightness(1.15) contrast(1.1) saturate(0.9)',
-    overlay: 'bg-gradient-to-t from-blue-900/10 to-transparent',
     tag: '📸 Estudio Profesional',
+    afterImage: 'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=500&q=80', // Reemplazar con '/images/despues-estudio.jpg'
   },
   {
     id: 'lifestyle',
@@ -25,9 +24,8 @@ const IMAGE_VARIANTS = [
     color: 'from-amber-500 to-orange-500',
     badge: 'bg-amber-500',
     description: 'Producto en contexto de uso real',
-    filter: 'brightness(1.05) contrast(1.05) saturate(1.3) sepia(0.15)',
-    overlay: 'bg-gradient-to-t from-amber-900/20 to-transparent',
     tag: '✨ Lifestyle',
+    afterImage: 'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=500&q=80', // Reemplazar con '/images/despues-lifestyle.jpg'
   },
   {
     id: 'medidas',
@@ -36,20 +34,18 @@ const IMAGE_VARIANTS = [
     color: 'from-cyan-500 to-teal-500',
     badge: 'bg-cyan-500',
     description: 'Dimensiones y especificaciones técnicas',
-    filter: 'brightness(1.1) contrast(1.15) saturate(0.7) hue-rotate(10deg)',
-    overlay: 'bg-gradient-to-t from-cyan-900/20 to-transparent',
     tag: '📐 Medidas técnicas',
+    afterImage: 'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=500&q=80', // Reemplazar con '/images/despues-medidas.jpg'
   },
   {
     id: 'portada',
-    label: 'Portada ML',
+    label: 'Portada E-Commerce',
     icon: Layout,
     color: 'from-yellow-400 to-yellow-500',
     badge: 'bg-yellow-500',
-    description: 'Formato optimizado para portada en Mercado Libre',
-    filter: 'brightness(1.2) contrast(1.1) saturate(1.2)',
-    overlay: 'bg-gradient-to-b from-yellow-400/20 to-transparent',
-    tag: '🏆 Portada ML',
+    description: 'Formato optimizado para portada de E-Commerce',
+    tag: '🏆 Portada',
+    afterImage: 'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=500&q=80', // Reemplazar con '/images/despues-portada.jpg'
   },
   {
     id: 'infografia',
@@ -58,17 +54,17 @@ const IMAGE_VARIANTS = [
     color: 'from-purple-500 to-violet-600',
     badge: 'bg-purple-500',
     description: 'Beneficios y características destacadas',
-    filter: 'brightness(1.05) contrast(1.2) saturate(1.1)',
-    overlay: 'bg-gradient-to-tr from-purple-900/30 to-transparent',
     tag: '💡 Infografía',
+    afterImage: 'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=500&q=80', // Reemplazar con '/images/despues-infografia.jpg'
   },
 ];
 
 function BeforeAfterSection({ onShowAuth }: { onShowAuth: (m: 'register') => void }) {
   const [selected, setSelected] = React.useState(IMAGE_VARIANTS[0]);
 
-  // Product image from Unsplash (cosmetic bottle, works for demo)
-  const PRODUCT_IMG = 'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=500&q=80';
+  // 1. Imagen de ANTES (la original sin editar)
+  // Para usar una tuya, cambiá esto por algo como: const BEFORE_IMG = '/images/antes.jpg';
+  const BEFORE_IMG = 'https://images.unsplash.com/photo-1585386959984-a4155224a1ad?w=500&q=80';
 
   return (
     <section className="py-24 px-6 bg-white/[0.02] border-y border-white/5">
@@ -107,10 +103,9 @@ function BeforeAfterSection({ onShowAuth }: { onShowAuth: (m: 'register') => voi
             </div>
             <div className="relative aspect-square bg-slate-900/50 overflow-hidden">
               <img
-                src={PRODUCT_IMG}
+                src={BEFORE_IMG}
                 alt="Foto tomada con celular"
                 className="w-full h-full object-cover"
-                style={{ filter: 'brightness(0.75) contrast(0.9) saturate(0.8)', transform: 'scale(1.05) rotate(-2deg)' }}
               />
               {/* Simulate phone imperfections */}
               <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-slate-900/40" />
@@ -129,14 +124,12 @@ function BeforeAfterSection({ onShowAuth }: { onShowAuth: (m: 'register') => voi
               <div className="w-3 h-3 rounded-full bg-emerald-500" />
               <span className="text-xs font-black uppercase tracking-widest text-emerald-400">Después — {selected.label} con IA</span>
             </div>
-            <div className="relative aspect-square overflow-hidden" style={{ background: selected.id === 'studio' ? 'white' : selected.id === 'portada' ? '#fff159' : selected.id === 'lifestyle' ? '#2d1a0e' : selected.id === 'medidas' ? '#e8f4f8' : '#1a0a2e' }}>
+            <div className="relative aspect-square overflow-hidden bg-slate-900">
               <img
-                src={PRODUCT_IMG}
+                src={selected.afterImage}
                 alt={`Resultado ${selected.label}`}
                 className="w-full h-full object-cover transition-all duration-700"
-                style={{ filter: selected.filter }}
               />
-              <div className={`absolute inset-0 ${selected.overlay}`} />
 
               {/* Variant-specific overlays */}
               {selected.id === 'medidas' && (
@@ -204,7 +197,7 @@ export default function LandingPage({ onShowAuth, onEnterDemo }: LandingPageProp
       bgColor: 'bg-blue-50',
       textColor: 'text-blue-600',
       title: 'SEO Automatizado con IA',
-      description: 'Generá títulos y descripciones optimizados para Mercado Libre en segundos. La IA analiza las tendencias de búsqueda y maximiza tu visibilidad.',
+      description: 'Generá títulos y descripciones optimizados para tu E-Commerce en segundos. La IA analiza las tendencias de búsqueda y maximiza tu visibilidad.',
       stat: '10x más rápido',
     },
     {
@@ -229,7 +222,7 @@ export default function LandingPage({ onShowAuth, onEnterDemo }: LandingPageProp
 
   const benefits = [
     { icon: Clock, label: 'Ahorro de tiempo', value: '5 hs/semana', sub: 'en promedio por vendedor' },
-    { icon: TrendingUp, label: 'Más visibilidad', value: '+40%', sub: 'en búsquedas de ML' },
+    { icon: TrendingUp, label: 'Más visibilidad', value: '+40%', sub: 'en búsquedas' },
     { icon: Coins, label: 'Ahorro en costos', value: '$50.000+', sub: 'vs. agencia o fotógrafo' },
   ];
 
@@ -237,13 +230,13 @@ export default function LandingPage({ onShowAuth, onEnterDemo }: LandingPageProp
     { n: '01', title: 'Creá tu cuenta gratis', desc: 'Registrate en segundos y recibí 30 créditos de regalo para probar todo.' },
     { n: '02', title: 'Subí tu producto', desc: 'Ingresá el nombre, características y una foto de tu producto.' },
     { n: '03', title: 'La IA hace el trabajo', desc: 'En segundos tenés títulos SEO, descripciones y fotos profesionales listas.' },
-    { n: '04', title: 'Publicá y vendé más', desc: 'Copiá el contenido y publicá en Mercado Libre con todo optimizado.' },
+    { n: '04', title: 'Publicá y vendé más', desc: 'Copiá el contenido y publicá en tu E-Commerce con todo optimizado.' },
   ];
 
   const faqs = [
     { q: '¿Qué son los créditos?', a: 'Los créditos son la moneda de la plataforma. Cada acción (generar un título, transformar una imagen) consume créditos. Al registrarte recibís 30 créditos gratis para probar todas las herramientas.' },
     { q: '¿Necesito saber de IA o SEO?', a: 'Para nada. La plataforma está diseñada para vendedores, no para técnicos. Solo cargás los datos de tu producto y la IA hace el resto.' },
-    { q: '¿Funciona para cualquier categoría de ML?', a: 'Sí. Product Pro funciona para todas las categorías: electrónica, indumentaria, hogar, juguetes, herramientas, y mucho más.' },
+    { q: '¿Funciona para cualquier categoría?', a: 'Sí. Product Pro funciona para todas las categorías: electrónica, indumentaria, hogar, juguetes, herramientas, y mucho más.' },
     { q: '¿Puedo probar antes de pagar?', a: 'Sí, los 30 créditos de bienvenida son completamente gratis, sin tarjeta de crédito requerida. También podés ver una demo sin registrarte.' },
   ];
 
@@ -301,10 +294,10 @@ export default function LandingPage({ onShowAuth, onEnterDemo }: LandingPageProp
           </div>
 
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-black tracking-tight leading-[1.08] mb-6">
-            Vendé más en{' '}
+            Vendé más en tu{' '}
             <span className="relative inline-block">
-              <span className="text-[#3483fa]">Mercado Libre</span>
-              <span className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-[#3483fa] to-[#fff159] rounded-full opacity-60" />
+              <span className="text-[#8b5cf6]">E-Commerce</span>
+              <span className="absolute -bottom-1 left-0 right-0 h-1 bg-gradient-to-r from-[#8b5cf6] to-[#fff159] rounded-full opacity-60" />
             </span>{' '}
             con el poder de la{' '}
             <span className="text-[#fff159]">IA</span>
@@ -381,7 +374,7 @@ export default function LandingPage({ onShowAuth, onEnterDemo }: LandingPageProp
             <span className="text-slate-500">publicaciones manualmente?</span>
           </h2>
           <p className="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
-            La mayoría de los vendedores de Mercado Libre invierten <span className="text-white font-bold">5 o más horas semanales</span> escribiendo títulos, descripciones y editando fotos. Ese tiempo vale dinero. <span className="text-[#fff159] font-bold">Product Pro lo hace por vos en segundos.</span>
+            La mayoría de los vendedores invierten <span className="text-white font-bold">5 o más horas semanales</span> escribiendo títulos, descripciones y editando fotos. Ese tiempo vale dinero. <span className="text-[#fff159] font-bold">Product Pro lo hace por vos en segundos.</span>
           </p>
 
           {/* Before / After */}

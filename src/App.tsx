@@ -215,6 +215,7 @@ export default function App() {
       setShowAuthModal(false);
       setCurrentView('app');
     } catch (err: any) {
+      console.error('Google Auth Error:', err);
       setAuthError(err.message || 'Error con Google');
     }
   };
